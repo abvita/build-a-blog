@@ -10,12 +10,14 @@
             <a href="/blog">Blog</a>
         </h1>
 
-          <form method="get" action="/newpost">
-            <button type="submit">New Post</button>
-          </form>
-          <form method="get" action="/blog">
-            <button type="submit">View Posts</button>
-          </form>
+          <div id="buttons">
+            <form method="get" action="/newpost">
+              <button type="submit">New Post</button>
+            </form>
+            <form method="get" action="/blog">
+              <button type="submit">View Posts</button>
+            </form>
+          </div>
       </div>
       <div id="content">
         {% block content %}

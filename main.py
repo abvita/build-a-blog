@@ -45,7 +45,6 @@ class Post(db.Model):
     def get_permalink(self):
         return "/blog/" + str(self.key().id_or_name())
 
-
 #Front page handler
 class Index(Handler):
     def get(self):
