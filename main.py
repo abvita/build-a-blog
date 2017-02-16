@@ -36,26 +36,59 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
+#Post db object constructor
+class Post(db.Model):
+    subject = db.StringProperty(required = True)
+    content = db.TextProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
+
+    def get_permalink(self):
+        return "/blog/" + str(self.key().id_or_name())
+
+
 #Front page handler
 class Index(Handler):
     def get(self):
-        self.render('base.html')
+        self.render('blog.html')
 
 #New post handler
 class NewPost(Handler):
     def get(self):
-        pass
+        self.render('newpost.html')
+
+    def post(self):
+        subject = self.request.get('subject')
+        content = self.request.get('content')
+
+        if subject and content:
+            p = Post(subject = subject, content = content)
+            p.put()
+            link = str(p.key().id())
+            self.redirect('/blog/' + link)
+        else:
+            error = "subject and content, please!"
+            self.render("newpost.html", subject=subject, content=content, error=error)
+
 #Post view handler
-class ViewPostHandler(webapp2.RequestHandler):
+class ViewPostHandler(Handler):
     def get(self, id):
-        pass
+        p = Post.get_by_id(int(id))
+
+        if not p:
+            error = "Post does not exist!"
+            self.render("postview.html", error=error)
+        else:
+            self.render("postview.html", subject=p.subject, content=p.content, created=p.created)
 
 #Blog handler
 class Blog(Handler):
     def get(self):
-        pass
+        display_posts = db.GqlQuery("SELECT * FROM Post ORDER BY created DESC LIMIT 5")
+        self.render('blog.html', display_posts = display_posts)
 
 app = webapp2.WSGIApplication([
-    ('/', Index),
-    ('/blog', Blog)
+    ('/', Blog),
+    ('/blog', Blog),
+    ('/newpost', NewPost),
+    webapp2.Route('/blog/<id:\d+>', ViewPostHandler)
 ], debug=True)

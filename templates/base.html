@@ -1,15 +1,26 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>GAE Blog App</title>
+        <title>Basic Blog - GAE Demo</title>
+        <link rel = "stylesheet" type = "text/css" href = "/stylesheets/main_style.css"/>
     </head>
     <body>
+      <div id="header">
         <h1>
             <a href="/blog">Blog</a>
         </h1>
 
+          <form method="get" action="/newpost">
+            <button type="submit">New Post</button>
+          </form>
+          <form method="get" action="/blog">
+            <button type="submit">View Posts</button>
+          </form>
+      </div>
+      <div id="content">
         {% block content %}
         {% endblock %}
+      </div>
 
     </body>
 </html>
